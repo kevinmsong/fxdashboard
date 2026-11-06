@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -736,9 +737,30 @@ class TerminalUI:
         minutes = (diff.seconds % 3600) // 60
         return f"{minutes}m ago"
 
+def load_news_api_key() -> str:
+    """Read the NewsAPI key from the environment.
+
+    Raises:
+        RuntimeError: if NEWS_API_KEY is unset or blank.
+    """
+    api_key = os.getenv("NEWS_API_KEY")
+    if api_key is None or not api_key.strip():
+        raise RuntimeError(
+            "NEWS_API_KEY is not set. Export NEWS_API_KEY before starting the app "
+            "(see README.md and .env.example)."
+        )
+    return api_key.strip()
+
+
 def main():
     # Initialize components
-    news_aggregator = NewsAggregator(api_key='82471e592e8c4d3d95ec33e3add393be')
+    try:
+        api_key = load_news_api_key()
+    except RuntimeError as exc:
+        st.error(str(exc))
+        st.stop()
+        raise
+    news_aggregator = NewsAggregator(api_key=api_key)
     terminal = TerminalUI(news_aggregator)
     
     # Render layout

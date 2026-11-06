@@ -25,7 +25,21 @@ See `requirements.txt` (streamlit, pandas, numpy, yfinance, plotly, textblob, ne
 pip install -r requirements.txt
 ```
 
-3. Obtain a NewsAPI key. The app currently constructs `NewsAggregator` with a key in `fxdashboard.py`; move it to Streamlit secrets or an environment variable before sharing or deploying.
+3. Obtain a NewsAPI key from [newsapi.org](https://newsapi.org/) and set `NEWS_API_KEY` in the environment. The app reads that variable at startup and stops with an error if it is missing. Do not commit the key.
+
+```bash
+cp .env.example .env
+# Edit .env and set NEWS_API_KEY to your own key (the file is gitignored).
+set -a
+source .env
+set +a
+```
+
+Or export it for the current shell:
+
+```bash
+export NEWS_API_KEY=your_newsapi_key
+```
 
 ## Usage
 
